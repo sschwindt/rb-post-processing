@@ -31,5 +31,5 @@ def run(input_csv="SRVtopo.csv"):
 
 
 if __name__ == '__main__':
-    csv_name = input(" Please enter csv file name with XYZ data (e.g., \'SRVtopo.csv\')\n >>")
+    csv_name = str(input(" Please enter csv file name with XYZ data (e.g., \'SRVtopo.csv\')\n >> "))
     run()

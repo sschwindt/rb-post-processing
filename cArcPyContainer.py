@@ -40,7 +40,7 @@ class ArcPyContainer:
 
     @fGl.err_info
     @fGl.spatial_license
-    def csv2points(self, spatial_ref=26942, x_field_name='X', y_field_name='Y', z_field_name='Z'):
+    def csv2points(self, spatial_ref=26942, x_field_name='X', y_field_name='Y'):
         """
         Converts csv file to point shapefile
         :param spatial_ref: INT of factory code of a SpatialReference. DEFAULT = 26942 (NAD83 California II)
@@ -57,8 +57,7 @@ class ArcPyContainer:
         print(" * reading %s and creating XYEvent layer ..." % self.csv_file)
         arcpy.MakeXYEventLayer_management(table=self.csv_file, in_x_field=x_field_name, in_y_field=y_field_name,
                                           out_layer=self.csv_name + "_pts",
-                                          spatial_reference=self.sr,
-                                          in_z_field=z_field_name)
+                                          spatial_reference=self.sr)
         print(" * converting XYEvent layer to %s ..." % self.point_shp)
         arcpy.FeatureClassToShapefile_conversion(self.csv_name + "_pts", self.out_dir)
         print("   - OK")
@@ -75,7 +74,7 @@ class ArcPyContainer:
 
     @fGl.err_info
     @fGl.threeD_license
-    def points2tin(self, field_name="Z", edge_length=200):
+    def points2tin(self, field_name="Z", edge_length=400):
         """
         Converts point shapefile to TIN
         :param field_name: STR
@@ -88,7 +87,8 @@ class ArcPyContainer:
         arcpy.CreateTin_3d(out_tin=self.tin, in_features=[[self.point_shp, field_name]])
         print(" * clipping edges longer than %s ..." % str(edge_length))
         arcpy.DelineateTinDataArea_3d(in_tin=self.tin, max_edge_length=edge_length, method="PERIMETER_ONLY")
-        arcpy.TinDomain_3d(in_tin=self.tin, out_feature_class=self.boundary_shp, out_geometry_type="POLYGON")
+        # The following command can be activate to overwrite the boundary shapefile as a function of the TIN
+        # arcpy.TinDomain_3d(in_tin=self.tin, out_feature_class=self.boundary_shp, out_geometry_type="POLYGON")
         print("   - OK (saved as %s)" % self.tin)
 
     @fGl.err_info
